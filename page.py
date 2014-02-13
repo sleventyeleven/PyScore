@@ -10,7 +10,7 @@ def handler(req):
     req.write("\nTotal Points: " + str(Get_Total_Points(user)).replace('L', ''))
     req.write("\n")
 	
-	  #reset counter and total
+    #reset counter and total
     counter = 0
     total = 0
     for challenge in challenges:

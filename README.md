@@ -9,9 +9,13 @@ Requires
 ========
 
 python 2.5+
+
 Python MySQLdb
+
 MySQL 5.0+
+
 Apache 2.2+
+
 mod_python
 
 

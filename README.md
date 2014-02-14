@@ -43,7 +43,7 @@ In order for the side to work, mod_python must be installed and your apache conf
                 
                 AddHandler mod_python .py
                 
-                PythonHandler page
+                PythonHandler mod_python.publisher
                 
                 PythonDebug On
                 

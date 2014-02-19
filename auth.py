@@ -8,7 +8,7 @@ def authenhandler(req):
     user = req.user
 	
     #check for null or none password
-	if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
+    if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
         return apache.HTTP_UNAUTHORIZED
     
     #get the connection information for DB
@@ -17,8 +17,8 @@ def authenhandler(req):
     #open a connection to the DB server
     curs = conn.cursor()
 	
-	#clean user input
-	user = user.replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
+    #clean user input
+    user = user.replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
     
     #execute a check to see if
     curs.execute("SELECT User_Password FROM PS_Users WHERE User_Name =%s",(user))

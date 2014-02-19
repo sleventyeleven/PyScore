@@ -97,11 +97,14 @@ def challenge(req, answer, challengenum):
     #get user
     user = req.user
 
+    #set content type to html
+    req.content_type = "text/html"
+
     #get a list of the challenges
     challenges = Get_Challenges()
 
     if user in challenges[int(challengenum) - 1][0].split(","):
-        raise apache.SERVER_RETURN, apache.HTTP_NOT_ACCEPTABLE
+        return '<meta http-equiv="refresh" content="0;url=/">'
 
     if challenges[int(challengenum) - 1][3] == answer:
 
@@ -122,4 +125,4 @@ def challenge(req, answer, challengenum):
         #commit and close connection to database
         conn.commit()
         curs.close()
-        return "Accepted"
+        return '<meta http-equiv="refresh" content="0;url=/">'

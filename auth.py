@@ -23,14 +23,16 @@ def authenhandler(req):
     #execute a check to see if
     curs.execute("SELECT User_Password FROM PS_Users WHERE User_Name =%s",(user))
     
-    #check for bad user
-    if mysql_pw == None:
-        curs.close()
-        return apache.HTTP_UNAUTHORIZED	
 	
     #catch the server response
     mysql_pw = curs.fetchone()
-
+    
+    #check for bad user
+    if mysql_pw == None:
+        curs.close()
+        return apache.HTTP_UNAUTHORIZED
+    
+    
     if pw == mysql_pw[0]:
        curs.close()
        return apache.OK

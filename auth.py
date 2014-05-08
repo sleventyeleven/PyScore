@@ -48,7 +48,38 @@ def mysql_password(str):
     return "*" + pass2.upper()
 	
 def Connect_To_Database():
+#get the settings file and read it in
+
+    try:
+        settings_file = open("settings.ini", 'r')
+
+    except IOError:
+
+        path_to_settings_file = raw_input("Please enter the full path to the settings.ini file: ")
+        settings_file = open(path_to_settings_file, 'r')
+
+
+
+    #read settings form the file
+
+    for line in settings_file:
+
+        settings = []
+
+        settings = line.split("=")
+        
+        if settings[0] == "UserName":
+            setting_user_name = settings[1]
+        elif settings[0] == "Password":
+			setting_password = setting[1]
+		elif settings[0] == "Database":
+			setting_database = setting[1]
+		elif settings[0] == "Host":
+			setting_host = setting[1]
+		else:
+			print "I don't understand parsed setting"
+	
     #connect to the Database
-    conn = MySQLdb.connect(host="localhost", user="PyScore", passwd="P@ssw0rd", db="PyScore")
+    conn = MySQLdb.connect(host=setting_host, user=setting_user_name, passwd=setting_password, db=setting_database)
     #return the connection settings
     return conn

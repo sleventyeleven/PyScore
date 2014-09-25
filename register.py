@@ -10,15 +10,13 @@ def index(req):
     req.write("<p><html>")
     req.write('<form action="register.py/register" method="POST">')
     req.write("Do not lose this information!")
-    req.write("<p>THERE IS NOT METHOD OF RECOVERY!!!!")
+    req.write("<p>THERE IS NO METHOD OF RECOVERY!!!!")
     req.write("<p>Enter Username")
     req.write('<input type="text" name="name"><br>')
     req.write("<p>Enter Password")
     req.write('<input type="text" name="password"><br>')
     req.write('<input type="submit">')
     req.write("</form></html>")
-	
-    return apache.OK
 
 def mysql_password(str):
     #This function is identical to the MySQL PASSWORD() function.
@@ -29,15 +27,7 @@ def mysql_password(str):
 def Connect_To_Database():
 #get the settings file and read it in
 
-    try:
-        settings_file = open("../settings.ini", 'r')
-
-    except IOError:
-
-        path_to_settings_file = raw_input("Please enter the full path to the settings.ini file: ")
-        settings_file = open(path_to_settings_file, 'r')
-
-
+    settings_file = open("/var/www/settings", 'r')
 
     #read settings form the file
 
@@ -48,13 +38,13 @@ def Connect_To_Database():
         settings = line.split("=")
         
         if settings[0] == "UserName":
-            setting_user_name = settings[1]
+            setting_user_name = settings[1].strip("\n")
         elif settings[0] == "Password":
-            setting_password = setting[1]
+            setting_password = settings[1].strip("\n")
         elif settings[0] == "Database":
-            setting_database = setting[1]
+            setting_database = settings[1].strip("\n")
         elif settings[0] == "Host":
-            setting_host = setting[1]
+            setting_host = settings[1].strip("\n")
         else:
             print "I don't understand parsed setting"
 	
@@ -89,17 +79,17 @@ def register(req, name, password):
     #close connection to database
     curs.close()
 
-    if user_name or user_password in users:
-        return '<meta http-equiv="refresh" content="0;url=/register/">'
+    if user_name in users:
+        return '<meta http-equiv="refresh" content="0;url=/register.py">'
 	
     else:
-	    #open a connection to the DB server
+	#open a connection to the DB server
         curs = conn.cursor()
 	
-	    #execute a check to see if
+	#execute a check to see if
         curs.execute("INSERT INTO PS_Users (User_Name, User_Password, Total_Points) VALUES (%s,%s,%s)",(user_name, user_password, defualt_score))
 		
-		#commit and close connection to database
+        #commit and close connection to database
         conn.commit()
         curs.close()
         return '<meta http-equiv="refresh" content="0;url=/">'

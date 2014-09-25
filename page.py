@@ -2,15 +2,18 @@ from mod_python import apache
 import MySQLdb
 import hashlib
 
-def index(req):
+user_name = ""
 
+def index(req):
     def __auth__(req, user, password):
         
-		pw = mysql_password(password)
+        global user_name
+        user_name = user
+        pw = mysql_password(password)
 	
         #check for null or none password
         if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
-            return apache.HTTP_UNAUTHORIZED
+            return 0
     
         #get the connection information for DB
         conn = Connect_To_Database()
@@ -39,13 +42,13 @@ def index(req):
            return 1
         else:
            curs.close()
-           return 0
-    
-	user = req.user
+           return 0    
+
+    user = user_name
     challenges = Get_Challenges()
     req.content_type = "text/html"
     req.write('<link rel="stylesheet" href="../format.css" type="text/css" />')
-    req.write("Logged in as: " + user)
+    req.write("Logged in as: " + str(user))
     req.write("<p>")
     req.write("Total Points: " + str(Get_Total_Points(user)).replace('L', ''))
     req.write("<p>")
@@ -89,7 +92,7 @@ def index(req):
 def Connect_To_Database():
 	#get the settings file and read it in
 
-    settings_file = open("settings", 'r')
+    settings_file = open("/var/www/settings", 'r')
 
     #read settings form the file
 
@@ -100,15 +103,15 @@ def Connect_To_Database():
         settings = line.split("=")
         
         if settings[0] == "UserName":
-            setting_user_name = settings[1]
+            setting_user_name = settings[1].strip("\n")
         elif settings[0] == "Password":
-			setting_password = setting[1]
-		elif settings[0] == "Database":
-			setting_database = setting[1]
-		elif settings[0] == "Host":
-			setting_host = setting[1]
-		else:
-			print "I don't understand parsed setting"
+            setting_password = settings[1].strip("\n")
+        elif settings[0] == "Database":
+            setting_database = settings[1].strip("\n")
+        elif settings[0] == "Host":
+            setting_host = settings[1].strip("\n")
+        else:
+            print "I don't understand parsed setting"
 	
     #connect to the Database
     conn = MySQLdb.connect(host=setting_host, user=setting_user_name, passwd=setting_password, db=setting_database)

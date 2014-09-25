@@ -1,4 +1,4 @@
-Database=Pyscore
+Database=PyScore
 Host=localhost
 Password=P@ssw0rd
-UserName=user
+UserName=root

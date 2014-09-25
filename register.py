@@ -9,12 +9,16 @@ def index(req):
     req.write('<link rel="stylesheet" href="../format.css" type="text/css" />')
     req.write("<p><html>")
     req.write('<form action="register.py/register" method="POST">')
-	req.write("Do not lose this information!")
-	req.write("THERE IS NOT METHOD OF RECOVERY!!!!")
-    req.write('<input type="text" name="User Name"><br>')
-    req.write('<input type="text" name="Password"><br>')
+    req.write("Do not lose this information!")
+    req.write("<p>THERE IS NOT METHOD OF RECOVERY!!!!")
+    req.write("<p>Enter Username")
+    req.write('<input type="text" name="name"><br>')
+    req.write("<p>Enter Password")
+    req.write('<input type="text" name="password"><br>')
     req.write('<input type="submit">')
     req.write("</form></html>")
+	
+    return apache.OK
 
 def mysql_password(str):
     #This function is identical to the MySQL PASSWORD() function.
@@ -47,7 +51,7 @@ def Connect_To_Database():
             setting_user_name = settings[1]
         elif settings[0] == "Password":
             setting_password = setting[1]
-		elif settings[0] == "Database":
+        elif settings[0] == "Database":
             setting_database = setting[1]
         elif settings[0] == "Host":
             setting_host = setting[1]
@@ -63,9 +67,9 @@ def register(req, name, password):
 
     user_password = mysql_password(password)
 	
-	user_name = mysql_password(name)
+    user_name = name
 	
-	defualt_score = 0
+    defualt_score = 0
 
     #set content type to html
     req.content_type = "text/html"
@@ -88,7 +92,7 @@ def register(req, name, password):
     if user_name or user_password in users:
         return '<meta http-equiv="refresh" content="0;url=/register/">'
 	
-	else
+    else:
 	    #open a connection to the DB server
         curs = conn.cursor()
 	

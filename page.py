@@ -1,9 +1,47 @@
 from mod_python import apache
 import MySQLdb
+import hashlib
 
 def index(req):
 
-    user = req.user
+    def __auth__(req, user, password):
+        
+		pw = mysql_password(password)
+	
+        #check for null or none password
+        if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
+            return apache.HTTP_UNAUTHORIZED
+    
+        #get the connection information for DB
+        conn = Connect_To_Database()
+    
+        #open a connection to the DB server
+        curs = conn.cursor()
+	
+        #clean user input
+        user = user.replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
+    
+        #execute a check to see if
+        curs.execute("SELECT User_Password FROM PS_Users WHERE User_Name =%s",(user))
+    
+	
+        #catch the server response
+        mysql_pw = curs.fetchone()
+    
+        #check for bad user
+        if mysql_pw == None:
+            curs.close()
+            return 0
+    
+    
+        if pw == mysql_pw[0]:
+           curs.close()
+           return 1
+        else:
+           curs.close()
+           return 0
+    
+	user = req.user
     challenges = Get_Challenges()
     req.content_type = "text/html"
     req.write('<link rel="stylesheet" href="../format.css" type="text/css" />')
@@ -51,15 +89,7 @@ def index(req):
 def Connect_To_Database():
 	#get the settings file and read it in
 
-    try:
-        settings_file = open("settings.ini", 'r')
-
-    except IOError:
-
-        path_to_settings_file = raw_input("Please enter the full path to the settings.ini file: ")
-        settings_file = open(path_to_settings_file, 'r')
-
-
+    settings_file = open("settings", 'r')
 
     #read settings form the file
 
@@ -158,3 +188,10 @@ def challenge(req, answer, challengenum):
         conn.commit()
         curs.close()
         return '<meta http-equiv="refresh" content="0;url=/">'
+		
+
+def mysql_password(str):
+    #This function is identical to the MySQL PASSWORD() function.
+    pass1 = hashlib.sha1(str).digest()
+    pass2 = hashlib.sha1(pass1).hexdigest()
+    return "*" + pass2.upper()

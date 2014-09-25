@@ -2,45 +2,41 @@ from mod_python import apache
 import MySQLdb
 import hashlib
 
-def authenhandler(req):
+def index(req):
+#start registration process
 
-    pw = mysql_password(req.get_basic_auth_pw())
-    user = mysql_password(req.user)
+    #set content type to html
+    req.content_type = "text/html"
 	
-    #check for null or none password
-    if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
-        return apache.HTTP_UNAUTHORIZED
-    
-    #get the connection information for DB
+	#get the connection information for DB
     conn = Connect_To_Database()
     
     #open a connection to the DB server
     curs = conn.cursor()
 	
-    #clean user input
-    user = user.replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
-    
-    #execute a check to see if
-    curs.execute("SELECT User_Password FROM PS_Users WHERE User_Name =%s",(user))
-    
+	#execute a check to see if
+    curs.execute("SELECT * FROM PS_Users")
 	
     #catch the server response
-    mysql_pw = curs.fetchone()
-    
-    #check for bad user
-    if mysql_pw == None:
-        curs.close()
-        return apache.HTTP_UNAUTHORIZED
-    
-    
-    if pw == mysql_pw[0]:
-       curs.close()
-       return apache.OK
-    else:
-       curs.close()
-       return apache.HTTP_UNAUTHORIZED
-   
-   
+    users = curs.fetchall()
+
+    #close connection to database
+    curs.close()
+
+    req.content_type = "text/html"
+ 
+    req.write("<p><html>")
+    req.write("<p>Score Board <p>")
+	
+    sorted_users = sorted(users, key=itemgetter(2), reverse=True)
+	
+    counter = 0
+    for user in sorted_users:
+	    counter += 1
+        req.write("<p>" + str(counter) + ". " + user[0] + " with "  + user[2] + " points")
+	
+    return apache.OK
+
 def mysql_password(str):
     #This function is identical to the MySQL PASSWORD() function.
     pass1 = hashlib.sha1(str).digest()
@@ -51,7 +47,7 @@ def Connect_To_Database():
 #get the settings file and read it in
 
     try:
-        settings_file = open("settings.ini", 'r')
+        settings_file = open("../settings.ini", 'r')
 
     except IOError:
 
@@ -83,3 +79,18 @@ def Connect_To_Database():
     conn = MySQLdb.connect(host=setting_host, user=setting_user_name, passwd=setting_password, db=setting_database)
     #return the connection settings
     return conn
+	
+    if user_name or user_password in users:
+        return '<meta http-equiv="refresh" content="0;url=/register/">'
+	
+    else:
+	    #open a connection to the DB server
+        curs = conn.cursor()
+	
+	    #execute a check to see if
+        curs.execute("INSERT INTO PS_Users (User_Name, User_Password, Total_Points) VALUES (%s,%s,%s)",(user_name, user_password, defualt_score))
+		
+		#commit and close connection to database
+        conn.commit()
+        curs.close()
+        return '<meta http-equiv="refresh" content="0;url=/">'

@@ -6,7 +6,7 @@ def index(req):
     user = req.user
     challenges = Get_Challenges()
     req.content_type = "text/html"
-    req.write('<link rel="stylesheet" href="format.css" type="text/css" />')
+    req.write('<link rel="stylesheet" href="../format.css" type="text/css" />')
     req.write("Logged in as: " + user)
     req.write("<p>")
     req.write("Total Points: " + str(Get_Total_Points(user)).replace('L', ''))

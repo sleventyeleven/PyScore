@@ -5,7 +5,7 @@ import hashlib
 def authenhandler(req):
 
     pw = mysql_password(req.get_basic_auth_pw())
-    user = req.user
+    user = mysql_password(req.user)
 	
     #check for null or none password
     if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":

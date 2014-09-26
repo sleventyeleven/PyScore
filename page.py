@@ -159,8 +159,37 @@ def Get_Challenges():
 
 def challenge(req, answer, challengenum):
 
+    def __auth__(req, user, password):
+       global user_name
+       user_name = user
+       pw = mysql_password(password)
+       #check for null or none password
+       if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
+           return 0
+       #get the connection information for DB
+       conn = Connect_To_Database()
+       #open a connection to the DB server
+       curs = conn.cursor()
+       #clean user input
+       user = user.replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
+       #execute a check to see if
+       curs.execute("SELECT User_Password FROM PS_Users WHERE User_Name =%s",(user))
+       #catch the server response
+       mysql_pw = curs.fetchone()
+       #check for bad user
+       if mysql_pw == None:
+            curs.close()
+            return 0
+       if pw == mysql_pw[0]:
+            curs.close()
+            return 1
+       else:
+            curs.close()
+            return 0
+
+
     #get user
-    user = req.user
+    user = user_name
 
     #set content type to html
     req.content_type = "text/html"

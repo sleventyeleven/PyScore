@@ -1,13 +1,11 @@
 from mod_python import apache
-import MySQLdb
-import hashlib
+import lib
 
 def index(req):
 #start registration process
 
-    req.content_type = "text/html"
-    req.write('<link rel="stylesheet" href="../format.css" type="text/css" />')
-    req.write("<p><html>")
+    Print_Header(req)
+
     req.write('<form action="register.py/register" method="POST">')
     req.write("Do not lose this information!")
     req.write("<p>THERE IS NO METHOD OF RECOVERY!!!!")
@@ -18,40 +16,6 @@ def index(req):
     req.write('<input type="submit">')
     req.write("</form></html>")
 
-def mysql_password(str):
-    #This function is identical to the MySQL PASSWORD() function.
-    pass1 = hashlib.sha1(str).digest()
-    pass2 = hashlib.sha1(pass1).hexdigest()
-    return "*" + pass2.upper()
-	
-def Connect_To_Database():
-#get the settings file and read it in
-
-    settings_file = open("/var/www/settings", 'r')
-
-    #read settings form the file
-
-    for line in settings_file:
-
-        settings = []
-
-        settings = line.split("=")
-        
-        if settings[0] == "UserName":
-            setting_user_name = settings[1].strip("\n")
-        elif settings[0] == "Password":
-            setting_password = settings[1].strip("\n")
-        elif settings[0] == "Database":
-            setting_database = settings[1].strip("\n")
-        elif settings[0] == "Host":
-            setting_host = settings[1].strip("\n")
-        else:
-            print "I don't understand parsed setting"
-	
-    #connect to the Database
-    conn = MySQLdb.connect(host=setting_host, user=setting_user_name, passwd=setting_password, db=setting_database)
-    #return the connection settings
-    return conn
 	
 def register(req, name, password):
 

@@ -5,6 +5,7 @@
 #
 
 #Load required things
+from mod_python import util
 import MySQLdb
 import hashlib
 
@@ -44,7 +45,7 @@ def Connect_To_Database():
     return conn
 	
     if user_name or user_password in users:
-        return '<meta http-equiv="refresh" content="0;url=/register/">'
+        util.redirect(req, "/")
 	
     else:
 	#open a connection to the DB server
@@ -56,47 +57,7 @@ def Connect_To_Database():
         #commit and close connection to database
         conn.commit()
         curs.close()
-        return '<meta http-equiv="refresh" content="0;url=/">'
-
-def Auth_User():
-    def __auth__(req, user, password):
-        
-        global user_name
-        user_name = user
-        pw = mysql_password(password)
-    
-        #check for null or none password
-        if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
-            return 0
-    
-        #get the connection information for DB
-        conn = Connect_To_Database()
-    
-        #open a connection to the DB server
-        curs = conn.cursor()
-    
-        #clean user input
-        user = user.replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
-    
-        #execute a check to see if
-        curs.execute("SELECT User_Password FROM PS_Users WHERE User_Name =%s",(user))
-    
-    
-        #catch the server response
-        mysql_pw = curs.fetchone()
-    
-        #check for bad user
-        if mysql_pw == None:
-            curs.close()
-            return 0
-    
-    
-        if pw == mysql_pw[0]:
-           curs.close()
-           return 1
-        else:
-           curs.close()
-           return 0
+        util.redirect(req, "/")
 
 def Get_Total_Points(user):
 
@@ -122,15 +83,58 @@ def Print_Header(req):
 
     #print the header for navigation
     req.content_type = "text/html"
-    req.write('<link rel="stylesheet" href="../format.css" type="text/css" />')
+    req.write('<header>')
+    req.write('    <link rel="stylesheet" href="/css/bootstrap.min.css">')
+    req.write('    <link rel="stylesheet" href="/css/sidebar.css">')
+    req.write('    <script src="/js/bootstrap.min.js"></script>')
+    req.write('    <title>Pyscore</title>')
+    req.write('</header>')
+    req.write('<body>')
+  
+    req.write('  <nav class="navbar navbar-inverse navbar-fixed-top">')
+    req.write('      <div class="container">')
+    req.write('        <div class="navbar-header">')
+    req.write('          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">')
+    req.write('            <span class="sr-only">Toggle navigation</span>')
+    req.write('            <span class="icon-bar"></span>')
+    req.write('            <span class="icon-bar"></span>')
+    req.write('            <span class="icon-bar"></span>')
+    req.write('          </button>')
+    req.write('          <a class="navbar-brand" href="/">Challenges</a>')
+    req.write('        </div>')
+    req.write('        <div id="navbar" class="navbar-collapse collapse">')
+    req.write('          <ul class="nav navbar-nav">')
+    req.write('            <li><a href="/login">Login</a></li>')
+    req.write('            <li><a href="/score">Score Board</a></li>')
+    req.write('            <li><a href="/register">Register</a></li>')
+    req.write('          </ul>')
+    req.write('        </div><!--/.navbar-collapse -->')
+    req.write('      </div>')
+    req.write('    </nav>')
+    if 'user_name' in globals():
+        req.write('  <div class="col-sm-3 col-sm-offset-1 blog-sidebar">')
+        req.write('    <div class="sidebar-module sidebar-module-inset">')
+        req.write("      <h4>Logged in as: " + str(user) + "</h4>")
+        req.write("      <p>Total Points: " + str(Get_Total_Points(user)).replace('L', '') + "</p>")
+        req.write('    </div>')
+        req.write('  </div>')
+        
 
-    if user_name != "":
-        req.write("Logged in as: " + str(user))
-        req.write("<p>")
-        req.write("Total Points: " + str(Get_Total_Points(user)).replace('L', ''))
-        req.write("<p>")
+def Get_Challenges():
 
-    req.write('<a href="/register">Register</a>')
-    req.write('<a href="/score">Score</a>')
-    req.write('<a href="/page">Summit</a>')
+    #get the connection information for DB
+    conn = Connect_To_Database()
 
+    #open a connection to the DB server
+    curs = conn.cursor()
+
+    #execute a check to see if
+    curs.execute("SELECT * FROM PS_Challenges")
+
+    #catch the server response
+    ans = curs.fetchall()
+    
+    #close connection to database
+    curs.close()
+
+    return ans

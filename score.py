@@ -1,6 +1,6 @@
 from mod_python import apache
 from operator import itemgetter, attrgetter
-import lib
+from lib import *
 
 def index(req):
 #start registration process
@@ -24,14 +24,32 @@ def index(req):
 
     req.content_type = "text/html"
  
-    req.write("<p><html>")
-    req.write("<p>Score Board <p>")
-	
+    req.write("<p>")
+    req.write("<center><h1>Score Board</h1></center>")
+    req.write('<div class="col-sm-4 center-table">') 
+    req.write('<table class="table">')
+    req.write('<thead>')
+    req.write('<tr>')
+    req.write('<th>#</th>')
+    req.write('<th>Username</th>')
+    req.write('<th>Points</th>')
+    req.write('</tr>')
+    req.write('</thead>')
+    req.write('<tbody>')   
+
     sorted_users = sorted(users, key=itemgetter(2), reverse=True)
 	
     counter = 0
     for user in sorted_users:
          counter += 1
-         req.write("<p>" + str(counter) + ". " + str(user[0]) + " with "  + str(user[2]) + " points")
-	
+         
+         req.write('<tr>')
+         req.write('<td>' + str(counter) + '</td>')
+         req.write('<td>' + str(user[0]) + '</td>')
+         req.write('<td>' + str(user[2]) + '</td>')
+         req.write('</tr>')
+
+    req.write('</center></tbody>')
+    req.write('</table>')
+    req.write('</div>')	
     return apache.OK

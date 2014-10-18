@@ -1,15 +1,23 @@
-from mod_python import apache
-import lib
-
-user_name = ""
+from mod_python import Session, apache, util
+from lib import *
 
 def index(req):
 
-    Auth_User()
+    session = Session.Session(req)
+    try:
+        user_name = session['login']
 
-    user = user_name
+    except:
+        user_name = ""
+
     challenges = Get_Challenges()
     Print_Header(req)
+
+    if user_name == "":
+        req.write("<center><h2>Login to submit flags</h2></center>")
+
+    req.write('<link rel="stylesheet" href="/css/login.css">')
+    req.write('<div class="container">')
 
     #reset counter and total
     counter = 0
@@ -19,60 +27,46 @@ def index(req):
         #incrament counter and total
         counter += 1
         total += int(str(challenge[1]).replace('L', ''))
-
+        
         #Display the challenge number and point value
         req.write("<p>")
-        req.write("Challenge " + str(counter) + " worth " + str(challenge[1]).replace('L', '') + " points.")
+        req.write("<center><h4>Challenge " + str(counter) + " worth " + str(challenge[1]).replace('L', '') + " points.</h4></center>")
 
-        #indicate if the challenge has been complted
-        if user in challenge[0].split(","):
+        #indicate if the challenge has been complted 
+        if user_name == "":
+           req.write("")
+
+        elif user_name in challenge[0].split(","):
             req.write("<p>")
-            req.write("Status: Complete")
+            req.write("<center>Status: Complete</center>")
 
         else:
             req.write("<p><html>")
-            req.write("Status: Open ")
-            req.write('<form action="page.py/challenge" method="POST">')
-            req.write('<input type="text" name="answer"><br>')
-            req.write('<input type="hidden" name="challengenum" value="' + str(counter) + '">')
-            req.write('<input type="submit">')
+            req.write("<center><h3> Status: Open </h3></center>")
+            req.write('<form class="form-signin" action="page.py/challenge" method="POST">')
+            req.write('<input type="text" name="answer" class="form-control" placeholder="Answer"><br>')
+            req.write('<input type="hidden" name="challengenum" value="' + str(counter) + '">') 
+            req.write('<button class="btn btn-primary btn-block" type="submit">Submit</button>')
             req.write("</form></html>")
 
         #display the challenge text
-        req.write("<p>" + str(challenge[2]))
+        req.write("<center><p>" + str(challenge[2]) + "</center>")
 
     #indicate the end of challenges
-    req.write("<p>End of Challenges <p>")
-    req.write(str(counter) + " total challenges worth " + str(total) + " points.")
+    req.write("<center><h2>End of Challenges</h2></center>")
+    req.write("<center><h3>" + str(counter) + " total challenges worth " + str(total) + " points.<h/3></center>")
 
     return apache.OK
 
-
-def Get_Challenges():
-
-    #get the connection information for DB
-    conn = Connect_To_Database()
-
-    #open a connection to the DB server
-    curs = conn.cursor()
-
-    #execute a check to see if
-    curs.execute("SELECT * FROM PS_Challenges")
-
-    #catch the server response
-    ans = curs.fetchall()
-
-    #close connection to database
-    curs.close()
-
-    return ans
-
 def challenge(req, answer, challengenum):
 
-    Auth_User()
+    session = Session.Session(req)
+    try:
+        user = session['login']
 
-    #get user
-    user = user_name
+    except:
+        util.redirect(req, "/login")
+
 
     #set content type to html
     req.content_type = "text/html"
@@ -81,7 +75,7 @@ def challenge(req, answer, challengenum):
     challenges = Get_Challenges()
 
     if user in challenges[int(challengenum) - 1][0].split(","):
-        return '<meta http-equiv="refresh" content="0;url=/">'
+        util.redirect(req, "/")
 
     if challenges[int(challengenum) - 1][3] == answer:
 
@@ -102,7 +96,7 @@ def challenge(req, answer, challengenum):
         #commit and close connection to database
         conn.commit()
         curs.close()
-        return '<meta http-equiv="refresh" content="0;url=/">'
+        util.redirect(req, "/")
 
     else:
-        return '<meta http-equiv="refresh" content="0;url=/'		
+        util.redirect(req, "/")		

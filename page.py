@@ -3,15 +3,8 @@ from lib import *
 
 def index(req):
 
-    session = Session.Session(req)
-    try:
-        user_name = session['login']
-
-    except:
-        user_name = ""
-
     challenges = Get_Challenges()
-    Print_Header(req)
+    user_name = Print_Header(req)
 
     if user_name == "":
         req.write("<center><h2>Login to submit flags</h2></center>")

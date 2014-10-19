@@ -5,7 +5,7 @@
 #
 
 #Load required things
-from mod_python import util
+from mod_python import util, Session
 import MySQLdb
 import hashlib
 
@@ -81,6 +81,15 @@ def Get_Total_Points(user):
 
 def Print_Header(req):
 
+    session = Session.Session(req)
+    
+    try:
+        user_name = session['login']
+
+    except:
+        user_name = ""
+
+
     #print the header for navigation
     req.content_type = "text/html"
     req.write('<header>')
@@ -111,14 +120,15 @@ def Print_Header(req):
     req.write('        </div><!--/.navbar-collapse -->')
     req.write('      </div>')
     req.write('    </nav>')
-    if 'user_name' in globals():
+    if user_name != "":
         req.write('  <div class="col-sm-3 col-sm-offset-1 blog-sidebar">')
         req.write('    <div class="sidebar-module sidebar-module-inset">')
-        req.write("      <h4>Logged in as: " + str(user) + "</h4>")
-        req.write("      <p>Total Points: " + str(Get_Total_Points(user)).replace('L', '') + "</p>")
+        req.write("      <h4>Logged in as: " + str(user_name) + "</h4>")
+        req.write("      <p>Total Points: " + str(Get_Total_Points(user_name)).replace('L', '') + "</p>")
         req.write('    </div>')
         req.write('  </div>')
         
+    return user_name
 
 def Get_Challenges():
 

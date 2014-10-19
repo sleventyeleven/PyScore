@@ -113,9 +113,13 @@ def Print_Header(req):
     req.write('        </div>')
     req.write('        <div id="navbar" class="navbar-collapse collapse">')
     req.write('          <ul class="nav navbar-nav">')
-    req.write('            <li><a href="/login">Login</a></li>')
+    if user_name != "":
+        req.write('            <li><a href="/lib.py/logout">Log Out</a></li>')
+    else:
+        req.write('            <li><a href="/login">Log In</a></li>')
     req.write('            <li><a href="/score">Score Board</a></li>')
-    req.write('            <li><a href="/register">Register</a></li>')
+    if user_name == "":
+        req.write('            <li><a href="/register">Register</a></li>')
     req.write('          </ul>')
     req.write('        </div><!--/.navbar-collapse -->')
     req.write('      </div>')
@@ -148,3 +152,11 @@ def Get_Challenges():
     curs.close()
 
     return ans
+
+def logout(req):
+
+    session = Session.Session(req)
+
+    session.delete()
+
+    util.redirect(req, "/")

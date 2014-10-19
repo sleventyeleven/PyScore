@@ -1,4 +1,4 @@
-from mod_python import apache
+from mod_python import apache, util, Session
 from lib import *
 
 def index(req):
@@ -8,7 +8,7 @@ def index(req):
     
     req.write('<link rel="stylesheet" href="/css/login.css">')
     req.write('<div class="container">')
-    req.write('<form class="form-signin" action="register.py/register" method="POST">')
+    req.write('<form class="form-signin" action="/register.py/register" method="POST">')
     req.write('<h2 class="form-signin-heading">Required Information</h2>')
     req.write("<h5>Do not lose this information!</h5>")
     req.write("<h3>THERE IS NO METHOD OF RECOVERY!!!!</h3>")
@@ -54,7 +54,7 @@ def register(req, username, email, password1, password2):
     curs.close()
 
     if user_name in users:
-        return '<meta http-equiv="refresh" content="0;url=/register.py">'
+        util.redirect(req, "/register")
 	
     else:
 	#open a connection to the DB server
@@ -66,4 +66,9 @@ def register(req, username, email, password1, password2):
         #commit and close connection to database
         conn.commit()
         curs.close()
-        return '<meta http-equiv="refresh" content="0;url=/">'
+
+        session = Session.Session(req)
+        session['login'] = user_name
+        session.save()
+        util.redirect(req, "/")
+

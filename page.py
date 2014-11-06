@@ -222,7 +222,7 @@ def challenge(req, answer, challengenum):
         return '<meta http-equiv="refresh" content="0;url=/">'
 
     else:
-        return '<meta http-equiv="refresh" content="0;url=/'		
+        return '<meta http-equiv="refresh" content="0;url=/>'		
 
 def mysql_password(str):
     #This function is identical to the MySQL PASSWORD() function.

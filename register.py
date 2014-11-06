@@ -79,9 +79,9 @@ def register(req, name, password):
     #close connection to database
     curs.close()
 
-    if user_name in users:
-        return '<meta http-equiv="refresh" content="0;url=/register.py">'
-	
+    for name in users:
+        if user_name == name[0]:
+            return '<meta http-equiv="refresh" content="0;url=/register.py">'	
     else:
 	#open a connection to the DB server
         curs = conn.cursor()

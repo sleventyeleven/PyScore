@@ -47,26 +47,42 @@ In order for the side to work, mod_python must be installed and your apache conf
                 
                 PythonDebug On
                 
-                PythonAuthenHandler auth
-                
-                AuthType Basic
-                
-                AuthName "Restricted Area"
-                
-                require valid-user
-                
         </Directory>
 ...
 
 
 Your database structure should be something like the following.
 
+--
+-- Database: `PyScore`
+--
 
-PyScore
+-- --------------------------------------------------------
 
-        PS_Users User_Name:Text User_Password:PASSWORD() Total_Points:Int
+--
+-- Table structure for table `PS_Challenges`
+--
 
-        PS_Challenges Challenge_Completed:CSV Point_Value:Int Challenge_Text:Text Challenge_Answer:Text
+CREATE TABLE IF NOT EXISTS `PS_Challenges` (
+  `Challenge_Completed` text NOT NULL,
+  `Point_Value` int(11) NOT NULL,
+  `Challenge_Text` text NOT NULL,
+  `Challenge_Answer` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `PS_Users`
+--
+
+CREATE TABLE IF NOT EXISTS `PS_Users` (
+  `User_Name` text NOT NULL,
+  `User_Password` text NOT NULL,
+  `Total_Points` int(11) NOT NULL,
+  `User_Email` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `PS_Users`
   
   
 More detailed information to come.

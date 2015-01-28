@@ -81,8 +81,6 @@ CREATE TABLE IF NOT EXISTS `PS_Users` (
   `User_Email` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `PS_Users`
   
   
 More detailed information to come.

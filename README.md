@@ -5,6 +5,8 @@ A very Simple Python Based Scoring Engine
 
 Currently In the works.
 
+Note: See the current development branch for more featured, although bleeding edge, code.
+
 Requires
 ========
 

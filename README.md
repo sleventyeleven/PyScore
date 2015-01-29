@@ -7,26 +7,26 @@ Currently works.
 
 Features
 ========
-Bootstrap Theme and CSS
-Basic and Scalable 
-MySQL Backend 
-Session Based User Management
+* Bootstrap Theme and CSS
+* Basic and Scalable 
+* MySQL Backend 
+* Session Based User Management
 
 To Come:
 ========
-Admin Page with:
-    -Ability to manage users 
-    -Ability to manage challenges 
-Branding/Campaign Support 
-An Actual Install Script
+* Admin Page with:
+    - Ability to manage users 
+    - Ability to manage challenges 
+* Branding/Campaign Support 
+* An Actual Install Script
 
 Requires
 ========
-python 2.5+
-Python MySQLdb
-MySQL 5.0+
-Apache 2.2+
-mod_python
+* python 2.5+
+* Python MySQLdb
+* MySQL 5.0+
+* Apache 2.2+
+* mod_python
 
 
 

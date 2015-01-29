@@ -29,7 +29,7 @@ def register(req, username, email, password1, password2):
     if password1 == password2:
         user_password = mysql_password(password1)
     else:    
-        return '<meta http-equiv="refresh" content="0;url=/register.py">'
+        util.redirect(req, "/register")
     user_name = str(username).replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
     user_email = str(email).replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
 

@@ -3,19 +3,29 @@ PyScore
 
 A very Simple Python Based Scoring Engine
 
-Currently In the works.
+Currently works.
+
+Features
+========
+Bootstrap Theme and CSS
+Basic and Scalable 
+MySQL Backend 
+Session Based User Management
+
+To Come:
+========
+Admin Page with:
+    -Ability to manage users 
+    -Ability to manage challenges 
+Branding/Campaign Support 
+An Actual Install Script
 
 Requires
 ========
-
 python 2.5+
-
 Python MySQLdb
-
 MySQL 5.0+
-
 Apache 2.2+
-
 mod_python
 
 
@@ -30,21 +40,13 @@ In order for the side to work, mod_python must be installed and your apache conf
         <Directory /var/www/>
         
                 Options Indexes FollowSymLinks MultiViews
-                
                 AllowOverride None
-                
                 Order allow,deny
-                
                 allow from all
-                
                 DirectoryIndex page.py
-                
                 AuthBasicAuthoritative off
-                
                 AddHandler mod_python .py
-                
                 PythonHandler mod_python.publisher
-                
                 PythonDebug On
                 
         </Directory>

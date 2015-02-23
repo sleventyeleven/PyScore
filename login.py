@@ -9,7 +9,7 @@ def index(req):
     
     req.write('<link rel="stylesheet" href="/css/login.css">')
     req.write('<div class="container">')
-    req.write('<form class="form-signin" action="login.py/login" method="POST">')
+    req.write('<form class="form-signin" action="/login.py/login" method="POST">')
     req.write('<h2 class="form-signin-heading">Please Sign In</h2>')
     req.write('<label for="text" class="sr-only">Username</label>')
     req.write('<input type="text" name="username" id="username" class="form-control" placeholder="Username" required>')
@@ -49,5 +49,4 @@ def login(req, username, password):
             session.save()
             util.redirect(req, "/")
 
-        else:
-            util.redirect(req, "/login")
+    util.redirect(req, "/login")

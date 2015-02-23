@@ -53,8 +53,9 @@ def register(req, username, email, password1, password2):
     #close connection to database
     curs.close()
 
-    if user_name in users:
-        util.redirect(req, "/register")
+    for thing in users:
+        if user_name in thing:
+            util.redirect(req, "/register")
 	
     else:
 	#open a connection to the DB server

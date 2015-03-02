@@ -26,6 +26,7 @@ def index(req):
 	
 def register(req, username, email, password1, password2):
 
+    
     if password1 == password2:
         user_password = mysql_password(password1)
     else:    
@@ -53,23 +54,25 @@ def register(req, username, email, password1, password2):
     #close connection to database
     curs.close()
 
+    #redirect if the user exists
     for thing in users:
         if user_name in thing:
             util.redirect(req, "/register")
 	
-    else:
-	#open a connection to the DB server
-        curs = conn.cursor()
+    #open a connection to the DB server
+    curs = conn.cursor()
 	
-	#execute a check to see if
-        curs.execute("INSERT INTO PS_Users (User_Name, User_Password, Total_Points, User_Email) VALUES (%s,%s,%s,%s)",(user_name, user_password, defualt_score, user_email ))
+    #execute a check to see if
+    curs.execute("INSERT INTO PS_Users (User_Name, User_Password, Total_Points, User_Email) VALUES (%s,%s,%s,%s)",(user_name, user_password, defualt_score, user_email ))
 		
-        #commit and close connection to database
-        conn.commit()
-        curs.close()
+    #commit and close connection to database
+    conn.commit()
+    curs.close()
 
-        session = Session.Session(req)
-        session['login'] = user_name
-        session.save()
-        util.redirect(req, "/")
+    #create session cookie with user name    
+    session = Session.Session(req)
+    session['login'] = user_name
+    session.save()
+    util.redirect(req, "/")
+
 

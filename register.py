@@ -31,8 +31,8 @@ def register(req, username, email, password1, password2):
         user_password = mysql_password(password1)
     else:    
         util.redirect(req, "/register")
-    user_name = str(username).replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
-    user_email = str(email).replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "")
+    user_name = str(username).replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "").replace(",", "")
+    user_email = str(email).replace('"', "").replace("'", "").replace("-", "").replace("+", "").replace("=", "").replace(",","")
 
     defualt_score = 0
 

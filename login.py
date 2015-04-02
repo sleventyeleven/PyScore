@@ -24,8 +24,6 @@ def login(req, username, password):
     session = Session.Session(req)
     
     pw = mysql_password(password)
-
-    req.content_type = "text/html"
     
     if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
         session['msg'] = 6
@@ -48,10 +46,10 @@ def login(req, username, password):
     for user in users:
 
         if user[0] == username and user[1] == pw:
-            session = Session.Session(req)
             session['login'] = username
             session.save()
             util.redirect(req, "/")
+
     session['msg'] = 2
     session.save()
     util.redirect(req, "/login")

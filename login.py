@@ -20,12 +20,16 @@ def index(req):
 
 	
 def login(req, username, password):
+
+    session = Session.Session(req)
     
     pw = mysql_password(password)
 
     req.content_type = "text/html"
     
     if pw == "*BE1BDEC0AA74B4DCB079943E70528096CCA985F8":
+        session['msg'] = 6
+        session.save()
         util.redirect(req, "/login")
 
     #get the connection information for DB
@@ -48,5 +52,6 @@ def login(req, username, password):
             session['login'] = username
             session.save()
             util.redirect(req, "/")
-
+    session['msg'] = 2
+    session.save()
     util.redirect(req, "/login")

@@ -80,7 +80,7 @@ def Get_Total_Points(user):
     return total_points[0]
 
 def Print_Header(req):
-
+    
     session = Session.Session(req)
     
     try:
@@ -99,7 +99,14 @@ def Print_Header(req):
     req.write('    <title>Pyscore</title>')
     req.write('</header>')
     req.write('<body>')
-  
+    req.write("\n<script>\n")
+    req.write("(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n")
+    req.write("(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n")
+    req.write("m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n")
+    req.write("})(window,document,'script','//www.google-analytics.com/analytics.js','ga');\n")
+    req.write("ga('create', 'UA-47552412-6', 'auto');\n")
+    req.write("ga('send', 'pageview');\n")
+    req.write("</script>\n")  
     req.write('  <nav class="navbar navbar-inverse navbar-fixed-top">')
     req.write('      <div class="container">')
     req.write('        <div class="navbar-header">')
@@ -131,7 +138,13 @@ def Print_Header(req):
         req.write("      <p>Total Points: " + str(Get_Total_Points(user_name)).replace('L', '') + "</p>")
         req.write('    </div>')
         req.write('  </div>')
-        
+    
+    msg = messages(session)
+
+    req.write('<center><h3>' + msg  +  '</h3></center>')
+    session['msg'] = 1
+    session.save()
+    
     return user_name
 
 def Get_Challenges():
@@ -160,3 +173,34 @@ def logout(req):
     session.delete()
 
     util.redirect(req, "/")
+
+def messages(session):
+    
+     try:
+          msg = session['msg']
+
+     except:
+          msg = 1
+
+     if msg == 1:
+          return ""
+     elif msg == 2:
+          return "Username and Password Combination Invalid"
+     elif msg == 3:
+          return "Your username cannot contain the following characters \n-<\',>;\~`"
+     elif msg == 4:
+          return "You must enter a valid email address"
+     elif msg == 5:
+          return "A user with that name already exists"
+     elif msg == 6:
+          return "A user with that email already exists"
+     elif msg == 6:
+          return "Password cannot be blank"
+     elif msg == 7:
+          return "Challenge text is incorrect"
+     elif msg == 8:
+          return "Challenge has already been completed"
+     elif msg == 9:
+          return "Both Password Feilds must be the same"
+     else:
+          return "An unknown error occured"

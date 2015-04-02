@@ -65,3 +65,12 @@ h6, .h6 {
   margin: 0 auto !important;
   float: none !important;
 }
+
+.seamless
+{
+  border: none;
+  padding: 1px;
+  position: absolute;
+  right: 1px;
+  width: 1px;
+}

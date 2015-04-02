@@ -68,6 +68,8 @@ def challenge(req, answer, challengenum):
     challenges = Get_Challenges()
 
     if user in challenges[int(challengenum) - 1][0].split(","):
+        session['msg'] = 8
+        session.save()
         util.redirect(req, "/")
 
     if challenges[int(challengenum) - 1][3] == answer:
@@ -92,4 +94,6 @@ def challenge(req, answer, challengenum):
         util.redirect(req, "/")
 
     else:
+        session['msg'] = 7
+        session.save()
         util.redirect(req, "/")		

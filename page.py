@@ -101,7 +101,7 @@ def challenge(req, answer, challengenum):
           curs.execute("UPDATE PS_Challenges SET Challenge_Completed=%s WHERE Challenge_Answer=%s", (userlist, answer))
 
           #update the total points earned
-          total = int(Get_Total_Points(user)) + int(challenges[int(challengenum) - 1][1])
+          total = int(Get_Total_Points(session)) + int(challenges[int(challengenum) - 1][1])
           curs.execute("UPDATE PS_Users SET Total_Points =%s WHERE User_Name =%s", (str(total), user))
 
           #commit and close connection to database

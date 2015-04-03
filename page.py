@@ -3,8 +3,14 @@ from lib import *
 
 def index(req):
 
-    challenges = Get_Challenges()
-    user_name = Print_Header(req)
+    session = Print_Header(req)
+    Get_Challenges(session)
+    try:
+        user_name = session['login']
+
+    except:
+        user_name = ""
+    challenges = session['challenges']
 
     if user_name == "":
         req.write("<center><h2>Login to submit flags</h2></center>")
@@ -49,7 +55,6 @@ def index(req):
     req.write("<center><h2>End of Challenges</h2></center>")
     req.write("<center><h3>" + str(counter) + " total challenges worth " + str(total) + " points.<h/3></center>")
 
-    return apache.OK
 
 def challenge(req, answer, challengenum):
 
@@ -65,7 +70,7 @@ def challenge(req, answer, challengenum):
     req.content_type = "text/html"
 
     #get a list of the challenges
-    challenges = Get_Challenges()
+    challenges = session['challenges']
 
     if user in challenges[int(challengenum) - 1][0].split(","):
         session['msg'] = 8
@@ -85,7 +90,7 @@ def challenge(req, answer, challengenum):
         curs.execute("UPDATE PS_Challenges SET Challenge_Completed=%s WHERE Challenge_Answer=%s", (userlist, answer))
 
         #update the total points earned
-        total = int(Get_Total_Points(user)) + int(challenges[int(challengenum) - 1][1])
+        total = int(Get_Total_Points(session)) + int(challenges[int(challengenum) - 1][1])
         curs.execute("UPDATE PS_Users SET Total_Points =%s WHERE User_Name =%s", (str(total), user))
 
         #commit and close connection to database

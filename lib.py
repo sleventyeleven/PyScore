@@ -5,7 +5,7 @@
 #
 
 #Load required things
-from mod_python import util, Session
+from mod_python import apache, util, Session
 import MySQLdb
 import hashlib
 
@@ -15,7 +15,8 @@ def mysql_password(str):
     pass2 = hashlib.sha1(pass1).hexdigest()
     return "*" + pass2.upper()
 	
-def Connect_To_Database():
+def Connect_To_Database(req=None):
+      
     #get the settings file and read it in
 
     settings_file = open("/var/www/settings", 'r')
@@ -42,26 +43,15 @@ def Connect_To_Database():
     #connect to the Database
     conn = MySQLdb.connect(host=setting_host, user=setting_user_name, passwd=setting_password, db=setting_database)
     #return the connection settings
-    return conn
-	
-    if user_name or user_password in users:
-        util.redirect(req, "/")
-	
-    else:
-	#open a connection to the DB server
-        curs = conn.cursor()
-	
-	#execute a check to see if
-        curs.execute("INSERT INTO PS_Users (User_Name, User_Password, Total_Points) VALUES (%s,%s,%s)",(user_name, user_password, defualt_score))
-		
-        #commit and close connection to database
-        conn.commit()
-        curs.close()
-        util.redirect(req, "/")
+    try:
+         util.redirect(req, "/")
+    except:
+         return  conn
 
-def Get_Total_Points(user):
+def Get_Total_Points(session):
 
     #get the connection information for DB
+    user = session['login']
     conn = Connect_To_Database()
 
     #open a connection to the DB server
@@ -77,7 +67,10 @@ def Get_Total_Points(user):
     curs.close()
 
     #return the users total points
-    return total_points[0]
+    try:
+         util.redirect(req, "/")
+    except:
+         return total_points[0]
 
 def Print_Header(req):
     
@@ -135,7 +128,7 @@ def Print_Header(req):
         req.write('  <div class="col-sm-3 col-sm-offset-1 blog-sidebar">')
         req.write('    <div class="sidebar-module sidebar-module-inset">')
         req.write("      <h4>Logged in as: " + str(user_name) + "</h4>")
-        req.write("      <p>Total Points: " + str(Get_Total_Points(user_name)).replace('L', '') + "</p>")
+        req.write("      <p>Total Points: " + str(Get_Total_Points(session)).replace('L', '') + "</p>")
         req.write('    </div>')
         req.write('  </div>')
     
@@ -145,12 +138,13 @@ def Print_Header(req):
     session['msg'] = 1
     session.save()
     
-    return user_name
+    return session
 
-def Get_Challenges():
-
+def Get_Challenges(session):
+    
     #get the connection information for DB
     conn = Connect_To_Database()
+
 
     #open a connection to the DB server
     curs = conn.cursor()
@@ -164,7 +158,9 @@ def Get_Challenges():
     #close connection to database
     curs.close()
 
-    return ans
+    session['challenges'] = ans 
+    session.save()
+
 
 def logout(req):
 

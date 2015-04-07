@@ -48,7 +48,7 @@ def index(req):
          else:
              req.write('<td> Open </td>')
          req.write('<td>' + str(challenge[1]).replace('L', '') + '</td>')
-         req.write('<td><div style="width: 650px; height: 120px;">' + str(challenge[2]) + '</div></td>')
+         req.write('<td><div style="width: 650px; height: 80px;  text-align: left; white-space: nowrap; overflow:hidden;">' + str(challenge[2]) + '</div></td>')
 
          if user_name not in challenge[0].split(","):
              req.write('<form class="form-signin" action="page.py/challenge" method="POST">')
@@ -62,8 +62,8 @@ def index(req):
     req.write('</center></tbody>')
     req.write('</table>')
     req.write('</div>')
-    req.write('<div style="position: fixed; bottom: 0; left: 5px;">')
-    req.write("<center><h3>" + str(counter) + " total challenges worth " + str(total) + " points.</h3></center>")
+    req.write('<div style="position: fixed; bottom: 0; left: 0px; background-color: #f5f5f5; border: 1px solid LightGray; border-radius: 3px; padding: 3px; padding-bottom: 0px;">')
+    req.write("<center><h5>" + str(counter) + " total challenges worth " + str(total) + " points.</h5></center>")
     req.write('</div>')
 
 def challenge(req, answer, challengenum):

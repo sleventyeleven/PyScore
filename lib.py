@@ -126,7 +126,7 @@ def Print_Header(req):
     req.write('    </nav>')
     if user_name != "":
         req.write('  <div class="col-sm-3 col-sm-offset-1 blog-sidebar">')
-        req.write('    <div class="sidebar-module sidebar-module-inset" style="position: fixed; left: 5px;">')
+        req.write('    <div class="sidebar-module sidebar-module-inset" style="position: fixed; left: 5px; border: 1px solid LightGray">')
         req.write("      <h4>Logged in as: " + str(user_name) + "</h4>")
         req.write("      <p>Total Points: " + str(Get_Total_Points(session)).replace('L', '') + "</p>")
         req.write('    </div>')

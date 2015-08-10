@@ -1,0 +1,90 @@
+<!DOCTYPE html> 
+<html>
+<header>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+	<link rel="stylesheet" href="/css/login.css">
+    <script src="/js/bootstrap.min.js"></script>
+    <title>Pyscore</title>
+</header>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Challenges</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+            <li><a href="/score">Score Board</a></li>
+            {% if username %}	
+                <li><a href="/logout">Log Out</a></li>
+            {% endif %}
+            {% if not username %}
+			    <li><a href="/login">Log In</a></li>
+                <li><a href="/register">Register</a></li>
+            {% endif %}
+        </ul>
+        </div>
+    </div>
+    </nav> 
+    {% if username %}
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+            <div class="sidebar-module sidebar-module-inset" style="position: fixed; left: 5px; border: 1px solid LightGray">
+                <h4>Logged in as: {{ username }}</h4>
+                <p>Total Points: {{ points }}</p>
+            </div>
+        </div> 
+    {% endif %}
+    {% if not username %}
+         <center><h2>Login to submit flags</h2></center>
+    {% endif %}
+    <div class="container">
+        <p><br>
+        <center><h2>Challenges</h2>
+        <div class="col-sm-4">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Status</th>
+                    <th>Value</th>
+                    <th>Challenge Text</th>
+                </tr>
+                </thead>
+                <tbody>
+				    <tr>
+                    {% counter=0 %}
+                    {% for challenge in challenges %}
+					    {% counter+=1 %}
+                            <td>{% challenge[5] %}</td>
+                            {% if not username %}
+                            <td> Login </td>
+                            {% endif %}
+							<td> challenge[6] </td>
+                            <td>{{challenge[1] }}</td>
+                            <td><div style="width: 650px; height: 80px;  text-align: left; white-space: nowrap; overflow:hidden;"> {{ challenge[2] }}</div></td>
+                           {% if username not in challenge[0].split(",") %}
+                           <form class="form-signin" action="/challenge" method="POST">
+                               <td><div style="width: 150px; height: 15px;"><input type="text" name="answer" class="form-control" placeholder="Answer"><br></div></td>
+                               <td><input type="hidden" name="challengenum" value="{{ counter }}"></td>
+                               <td><div style="width: 80px; height: 15px;"><button class="btn btn-primary btn-block" type="submit">Submit</button></div></td>
+                            </form>
+							{% endif %}
+				    {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </center>
+        <div style="position: fixed; bottom: 0; left: 0px; background-color: #f5f5f5; border: 1px solid LightGray; border-radius: 3px; padding: 3px; padding-bottom: 0px;">
+		    <center><h5> {{ counter }} total challenges worth {{ total }} points.</h5></center>
+        </div>
+	</div>
+</body>
+</html>
